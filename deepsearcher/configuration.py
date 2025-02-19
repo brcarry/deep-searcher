@@ -6,46 +6,22 @@ from deepsearcher.loader.file_loader.base import BaseLoader
 from deepsearcher.loader.web_crawler.base import BaseCrawler
 from deepsearcher.vector_db.base import BaseVectorDB
 
+import yaml
+
 FeatureType = Literal["llm", "embedding", "file_loader", "web_crawler", "vector_db"]
 
+
 class Configuration:
-    def __init__(self):
+    def __init__(self, config_path: str = "config.yaml"):
         # Initialize default configurations
-        self.provide_settings = {
-            "llm": {
-                "provider": "OpenAI",#"TogetherAI",
-                "config": {
-                    "model": "gpt-4o-mini" #"gpt-4o"#"deepseek-ai/DeepSeek-V3"
-                }
-            },
-            "embedding": {
-                "provider": "MilvusEmbedding",
-                "config": {
-                    "model": "default"
-                }
-            },
-            "file_loader": {
-                "provider": "PDFLoader",
-                "config": {}
-            },
-            "web_crawler": {
-                "provider": "FireCrawlCrawler",
-                "config": {}
-            },
-            "vector_db": {
-                "provider": "Milvus",
-                "config": {
-                    "uri": "./milvus.db"
-                }
-            }
-        }
-        self.query_settings = {
-            "max_iter": 3
-        }
-        self.load_settings = {
-            "chunk_size": 1500,
-            "chunk_overlap": 100
-        }
+        config_data = self.load_config_from_yaml(config_path)
+        self.provide_settings = config_data['provide_settings']
+        self.query_settings = config_data['query_settings']
+        self.load_settings = config_data['load_settings']
+
+    def load_config_from_yaml(self, config_path: str):
+        with open(config_path, "r") as file:
+            return yaml.safe_load(file)
 
     def set_provider_config(self, feature: FeatureType, provider: str, provider_configs: dict):
         """
@@ -61,7 +37,6 @@ class Configuration:
         self.provide_settings[feature]["provider"] = provider
         self.provide_settings[feature]["config"] = provider_configs
 
-
     def get_provider_config(self, feature: FeatureType):
         """
         Get the current provider and configuration for a given feature.
@@ -74,10 +49,11 @@ class Configuration:
 
         return self.provide_settings[feature]
 
+
 class ModuleFactory:
     def __init__(self, config: Configuration):
         self.config = config
-    
+
     def _create_module_instance(self, feature: FeatureType, module_name: str):
         # e.g.
         # feature = "file_loader"
@@ -86,22 +62,22 @@ class ModuleFactory:
         module = __import__(module_name, fromlist=[class_name])
         class_ = getattr(module, class_name)
         return class_(**self.config.provide_settings[feature]["config"])
-    
+
     def create_llm(self) -> BaseLLM:
         return self._create_module_instance("llm", "deepsearcher.llm")
-    
+
     def create_embedding(self) -> BaseEmbedding:
         return self._create_module_instance("embedding", "deepsearcher.embedding")
-    
+
     def create_file_loader(self) -> BaseLoader:
         return self._create_module_instance("file_loader", "deepsearcher.loader.file_loader")
-    
+
     def create_web_crawler(self) -> BaseCrawler:
         return self._create_module_instance("web_crawler", "deepsearcher.loader.web_crawler")
-    
+
     def create_vector_db(self) -> BaseVectorDB:
         return self._create_module_instance("vector_db", "deepsearcher.vector_db")
-    
+
 
 config = Configuration()
 

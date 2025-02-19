@@ -1,0 +1,26 @@
+provide_settings:
+  llm:
+    provider: "OpenAI"  # "TogetherAI"
+    config:
+      model: "gpt-4o-mini"  # "gpt-4o"  # "deepseek-ai/DeepSeek-V3"
+      api_key: "sk-xxxx"
+  embedding:
+    provider: "MilvusEmbedding"
+    config:
+      model: "default"
+      # api_key: ""  # Uncomment if use an embedding model provider that requires API key
+  file_loader:
+    provider: "PDFLoader"
+    config: {}
+  web_crawler:
+    provider: "FireCrawlCrawler"
+    config: {}
+  vector_db:
+    provider: "Milvus"
+    config:
+      uri: "./milvus.db"
+query_settings:
+  max_iter: 3
+load_settings:
+  chunk_size: 1500
+  chunk_overlap: 100

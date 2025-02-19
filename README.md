@@ -213,8 +213,8 @@ deepsearcher --help
 
 #### Configure modules
 
-You can configure all arguments by modifying [config.py](./config.py) to set up your system with default modules.
-For example, prepare your `OPENAI_API_KEY` in `llm_api_key`. 
+You can configure all arguments by modifying [config.yaml](./config.yaml) to set up your system with default modules.
+For example, set your `OPENAI_API_KEY` in the `llm` section of the YAML file.
 
 #### Start service
 The main script will run a FastAPI service with default address `localhost:8000`.
@@ -226,7 +226,7 @@ $ python main.py
 #### Access via browser
 
 You can open url http://localhost:8000/docs in browser to access the web service.
-Click on the button "Try it out", it allows you to fill the parameters and directly interact with the API
+Click on the button "Try it out", it allows you to fill the parameters and directly interact with the API.
 
 
 ---
