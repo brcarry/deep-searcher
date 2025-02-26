@@ -1,19 +1,11 @@
 from typing import List, Union
 
-from deepsearcher.online_query import query
-
 import uvicorn
 from fastapi import Body, FastAPI, HTTPException, Query
 
-
-
-
-
 from deepsearcher.configuration import Configuration, init_config
-
-
-
 from deepsearcher.offline_loading import load_from_local_files, load_from_website
+from deepsearcher.online_query import query
 
 app = FastAPI()
 
@@ -75,7 +67,7 @@ def load_website(
             collection_name=collection_name,
             collection_description=collection_description,
         )
-        return {"message": "Website loaded successfully."}
+        return {'message': "Website loaded successfully."}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
