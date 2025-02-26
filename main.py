@@ -67,7 +67,7 @@ def load_website(
             collection_name=collection_name,
             collection_description=collection_description,
         )
-        return {'message': "Website loaded successfully."}
+        return {'message': 'Website loaded successfully.'}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
